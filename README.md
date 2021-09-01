@@ -1,34 +1,33 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# bun vs next first load test
 
-## Getting Started
+This measures how long it takes to go from pressing enter in your terminal to the page visible on the screen.
 
-First, run the development server:
+This uses a very small Zig executable for printing the current timestamp in ms. The source code is in this repo and a binary for macOS x64 is checked in, so you don't need to have Zig installed to run this. I wrote it because I couldn't figure out how to get `time` to print on macOS in milliseconds
 
-```bash
-npm run dev
-# or
-yarn dev
+The page expects a `ms` query string param which is an integer timestamp in milliseconds since epoch.
+
+## Bun
+
+Note: the command is in fish
+
+```fish
+set -x CURRENT_TIMESTAMP (realpath ./print-timestamp); bun & open "http://localhost:3000/time?ms=$CURRENT_TIMESTAMP";
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Next.js
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+Due to how long Next takes to start, it may show a not found page in Chrome initially. But, Chrome automatically retries.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+```fish
+set -x CURRENT_TIMESTAMP (realpath ./print-timestamp);   ./node_modules/.bin/next dev --port=8081 & open "http://localhost:8081/time?ms=$CURRENT_TIMESTAMP";
+```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+Since the job is started asynchronously with `&`, you'll need to `killall bun node` or the server will remain running.
 
-## Learn More
+## compile ./print-timestamp.zig
 
-To learn more about Next.js, take a look at the following resources:
+If you want to compile `print-timestamp.zig`, run this:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```bash
+zig build -Drelease-fast
+```
