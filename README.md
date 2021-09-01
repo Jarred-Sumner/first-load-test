@@ -29,5 +29,7 @@ Since the job is started asynchronously with `&`, you'll need to `killall bun no
 If you want to compile `print-timestamp.zig`, run this:
 
 ```bash
-zig build -Drelease-fast
+zig build-exe ./print-timestamp.zig -Drelease-fast
 ```
+
+On macOS, you'll need to run the binary at least one extra time so that Gatekeeper doesn't cause `print-timestamp` to execute very slowly.
