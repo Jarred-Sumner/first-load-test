@@ -11,7 +11,7 @@ The page expects a `ms` query string param which is an integer timestamp in mill
 Note: the command is in fish
 
 ```fish
-set -x CURRENT_TIMESTAMP (realpath ./print-timestamp); bun & open "http://localhost:3000/time?ms=$CURRENT_TIMESTAMP";
+set -x CURRENT_TIMESTAMP (./print-timestamp); bun & open "http://localhost:3000/time?ms=$CURRENT_TIMESTAMP";
 ```
 
 ## Next.js
@@ -19,7 +19,7 @@ set -x CURRENT_TIMESTAMP (realpath ./print-timestamp); bun & open "http://localh
 Due to how long Next takes to start, it may show a not found page in Chrome initially. But, Chrome automatically retries.
 
 ```fish
-set -x CURRENT_TIMESTAMP (realpath ./print-timestamp);   ./node_modules/.bin/next dev --port=8081 & open "http://localhost:8081/time?ms=$CURRENT_TIMESTAMP";
+set -x CURRENT_TIMESTAMP (./print-timestamp); ./node_modules/.bin/next dev --port=8081 & open "http://localhost:8081/time?ms=$CURRENT_TIMESTAMP";
 ```
 
 Since the job is started asynchronously with `&`, you'll need to `killall bun node` or the server will remain running.
